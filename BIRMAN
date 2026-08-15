@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vértice — Academia de Matemática</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F7F8FA;
+    --surface:#FFFFFF;
+    --ink:#14213D;
+    --ink-soft:#4A567A;
+    --ink-faint:#8891A8;
+    --accent:#E7A339;
+    --accent-ink:#5C4413;
+    --line:#DCE1EA;
+    --line-strong:#B9C2D4;
+    --max:1180px;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    font-size:16px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    position:relative;
+  }
+
+  /* graph-paper texture, subtle, throughout the page */
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:40px 40px;
+    opacity:0.35;
+    pointer-events:none;
+    z-index:0;
+  }
+
+  .wrap{max-width:var(--max); margin:0 auto; padding:0 32px; position:relative; z-index:1;}
+
+  a{color:inherit; text-decoration:none;}
+
+  h1,h2,h3{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+    color:var(--ink);
+  }
+
+  .mono{font-family:'IBM Plex Mono', monospace;}
+
+  /* ---------- header ---------- */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(247,248,250,0.88);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:20px 32px;
+    max-width:var(--max); margin:0 auto;
+  }
+  .brand{
+    display:flex; align-items:center; gap:10px;
+    font-family:'Fraunces', serif; font-weight:600; font-size:1.25rem;
+  }
+  .brand-mark{
+    width:30px; height:30px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .nav-links{
+    display:flex; gap:36px; align-items:center;
+    font-size:0.94rem; font-weight:500; color:var(--ink-soft);
+  }
+  .nav-links a{transition:color .15s ease;}
+  .nav-links a:hover{color:var(--ink);}
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:11px 22px;
+    border-radius:3px;
+    font-weight:600; font-size:0.92rem;
+    border:1.5px solid var(--ink);
+    transition:all .15s ease;
+    white-space:nowrap;
+  }
+  .btn-primary{
+    background:var(--ink); color:var(--paper);
+  }
+  .btn-primary:hover{background:var(--accent); border-color:var(--accent); color:var(--accent-ink);}
+  .btn-ghost{
+    border-color:var(--line-strong); color:var(--ink);
+  }
+  .btn-ghost:hover{border-color:var(--ink);}
+  .menu-toggle{display:none; background:none; border:none; cursor:pointer; padding:4px;}
+  .menu-toggle svg{width:26px; height:26px;}
+
+  /* ---------- hero ---------- */
+  .hero{
+    padding:88px 0 60px;
+    position:relative;
+  }
+  .hero-grid{
+    display:grid;
+    grid-template-columns:1.1fr 1fr;
+    gap:56px;
+    align-items:center;
+  }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:10px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.78rem; letter-spacing:0.06em; text-transform:uppercase;
+    color:var(--ink-soft);
+    margin-bottom:22px;
+    padding:6px 12px 6px 6px;
+    border:1px solid var(--line-strong);
+    border-radius:20px;
+    width:fit-content;
+  }
+  .eyebrow-dot{
+    width:8px; height:8px; border-radius:50%; background:var(--accent);
+  }
+  .hero h1{
+    font-size:3.4rem;
+    line-height:1.06;
+    margin-bottom:22px;
+  }
+  .hero h1 em{
+    font-style:normal;
+    color:var(--accent-ink);
+    background:linear-gradient(transparent 62%, var(--accent) 62%);
+  }
+  .hero p.lead{
+    font-size:1.12rem;
+    color:var(--ink-soft);
+    max-width:480px;
+    margin-bottom:32px;
+  }
+  .hero-actions{display:flex; gap:14px; margin-bottom:40px; flex-wrap:wrap;}
+  .hero-proof{
+    display:flex; gap:28px; flex-wrap:wrap;
+  }
+  .proof-item{
+    display:flex; flex-direction:column; gap:2px;
+  }
+  .proof-num{font-family:'Fraunces', serif; font-weight:600; font-size:1.5rem;}
+  .proof-label{font-size:0.8rem; color:var(--ink-faint);}
+
+  .hero-graph{
+    position:relative;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:20px;
+  }
+  .hero-graph-label{
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:'IBM Plex Mono', monospace; font-size:0.72rem;
+    color:var(--ink-faint); margin-bottom:6px; letter-spacing:0.03em;
+  }
+
+  /* ---------- section shared ---------- */
+  section{padding:88px 0;}
+  .section-head{
+    max-width:600px;
+    margin-bottom:52px;
+  }
+  .section-tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.78rem; letter-spacing:0.06em; text-transform:uppercase;
+    color:var(--accent-ink);
+    margin-bottom:10px;
+    display:block;
+  }
+  .section-head h2{font-size:2.2rem; margin-bottom:14px;}
+  .section-head p{color:var(--ink-soft); font-size:1.02rem;}
+
+  .divider{
+    border:none; border-top:1px solid var(--line); margin:0;
+  }
+
+  /* ---------- courses ---------- */
+  .course-track{
+    position:relative;
+    margin-bottom:44px;
+    padding:18px 0 0;
+  }
+  .course-track svg{width:100%; height:auto; display:block;}
+
+  .courses-grid{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+    border-radius:6px;
+    overflow:hidden;
+  }
+  .course-card{
+    background:var(--surface);
+    padding:28px 24px;
+    display:flex; flex-direction:column; gap:14px;
+    transition:background .15s ease;
+  }
+  .course-card:hover{background:#FBFCFE;}
+  .course-level{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.74rem; color:var(--ink-faint);
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .course-level .dot{
+    width:9px; height:9px; border-radius:50%;
+    background:var(--accent);
+  }
+  .course-card h3{font-size:1.18rem; margin-bottom:2px; line-height:1.25;}
+  .course-age{font-size:0.84rem; color:var(--ink-faint);}
+  .course-desc{font-size:0.9rem; color:var(--ink-soft); flex-grow:1;}
+  .course-foot{
+    display:flex; justify-content:space-between; align-items:center;
+    padding-top:14px; border-top:1px solid var(--line);
+  }
+  .course-price{font-family:'IBM Plex Mono', monospace; font-weight:600; font-size:0.95rem;}
+  .course-price span{font-size:0.72rem; color:var(--ink-faint); font-weight:400;}
+  .course-link{font-size:0.85rem; font-weight:600; color:var(--accent-ink);}
+
+  /* ---------- materials ---------- */
+  .materials-list{
+    display:flex; flex-direction:column;
+    border-top:1px solid var(--line);
+  }
+  .material-row{
+    display:grid;
+    grid-template-columns:64px 1fr auto auto;
+    gap:20px;
+    align-items:center;
+    padding:22px 4px;
+    border-bottom:1px solid var(--line);
+    transition:background .15s ease;
+  }
+  .material-row:hover{background:rgba(231,163,57,0.06);}
+  .material-icon{
+    width:44px; height:44px;
+    border:1.5px solid var(--line-strong);
+    border-radius:6px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.68rem; font-weight:600; color:var(--ink-soft);
+  }
+  .material-info h3{font-size:1.02rem; font-weight:600; font-family:'Inter'; margin-bottom:3px;}
+  .material-info p{font-size:0.86rem; color:var(--ink-faint);}
+  .material-tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem; color:var(--ink-soft);
+    background:var(--paper);
+    border:1px solid var(--line-strong);
+    padding:4px 10px; border-radius:20px;
+    white-space:nowrap;
+  }
+  .material-download{
+    font-size:0.86rem; font-weight:600; color:var(--ink);
+    display:flex; align-items:center; gap:6px;
+  }
+  .material-download svg{width:16px; height:16px;}
+
+  /* ---------- about strip ---------- */
+  .about{
+    background:var(--ink);
+    color:var(--paper);
+  }
+  .about .wrap{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:56px;
+    align-items:center;
+  }
+  .about h2{color:var(--paper); font-size:2rem; margin-bottom:16px;}
+  .about p{color:#B8C0D6; font-size:1.02rem; margin-bottom:24px;}
+  .about-list{display:flex; flex-direction:column; gap:16px;}
+  .about-item{
+    display:flex; gap:14px; align-items:flex-start;
+    padding-bottom:16px; border-bottom:1px solid rgba(255,255,255,0.12);
+  }
+  .about-item:last-child{border-bottom:none; padding-bottom:0;}
+  .about-num{
+    font-family:'IBM Plex Mono', monospace; color:var(--accent); font-size:0.85rem; padding-top:3px;
+  }
+  .about-item h4{font-family:'Inter'; font-weight:600; font-size:1rem; color:var(--paper); margin-bottom:4px;}
+  .about-item p{color:#9AA4BE; font-size:0.88rem; margin:0;}
+
+  /* ---------- contact ---------- */
+  .contact{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:52px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:48px;
+  }
+  .contact h2{font-size:1.9rem; margin-bottom:12px;}
+  .contact p{color:var(--ink-soft); margin-bottom:24px;}
+  .contact-detail{
+    display:flex; gap:12px; margin-bottom:14px; font-size:0.92rem;
+  }
+  .contact-detail strong{font-weight:600; min-width:78px; color:var(--ink-faint); font-size:0.8rem; text-transform:uppercase; letter-spacing:0.04em; padding-top:2px;}
+  .form-field{margin-bottom:16px;}
+  .form-field label{
+    display:block; font-size:0.8rem; font-weight:600; color:var(--ink-soft);
+    margin-bottom:6px; text-transform:uppercase; letter-spacing:0.03em;
+  }
+  .form-field input, .form-field select{
+    width:100%; padding:12px 14px;
+    border:1.5px solid var(--line-strong);
+    border-radius:4px;
+    font-family:'Inter'; font-size:0.95rem;
+    background:var(--paper);
+    color:var(--ink);
+  }
+  .form-field input:focus, .form-field select:focus{
+    outline:2px solid var(--accent); outline-offset:1px; border-color:var(--accent);
+  }
+  .contact form .btn{width:100%; justify-content:center; margin-top:6px; cursor:pointer;}
+
+  /* ---------- footer ---------- */
+  footer{
+    border-top:1px solid var(--line);
+    padding:36px 0;
+  }
+  footer .wrap{
+    display:flex; justify-content:space-between; align-items:center;
+    flex-wrap:wrap; gap:16px;
+  }
+  .footer-brand{font-family:'Fraunces', serif; font-weight:600;}
+  .footer-links{display:flex; gap:24px; font-size:0.86rem; color:var(--ink-faint);}
+  .footer-links a:hover{color:var(--ink);}
+
+  /* ---------- reveal animation ---------- */
+  .reveal{
+    opacity:0; transform:translateY(14px);
+    transition:opacity .6s ease, transform .6s ease;
+  }
+  .reveal.in{opacity:1; transform:none;}
+
+  @media (prefers-reduced-motion: reduce){
+    .reveal{transition:none; opacity:1; transform:none;}
+    html{scroll-behavior:auto;}
+  }
+
+  /* ---------- responsive ---------- */
+  @media (max-width:980px){
+    .hero-grid{grid-template-columns:1fr;}
+    .courses-grid{grid-template-columns:repeat(2,1fr);}
+    .about .wrap{grid-template-columns:1fr;}
+    .contact{grid-template-columns:1fr; padding:36px;}
+  }
+  @media (max-width:720px){
+    .nav-links{display:none;}
+    .menu-toggle{display:block;}
+    .hero h1{font-size:2.3rem;}
+    .hero{padding:48px 0 40px;}
+    section{padding:56px 0;}
+    .courses-grid{grid-template-columns:1fr;}
+    .material-row{grid-template-columns:44px 1fr; row-gap:10px;}
+    .material-row .material-tag, .material-row .material-download{grid-column:2;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="nav">
+    <div class="brand">
+      <span class="brand-mark">
+        <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+          <rect x="1" y="1" width="28" height="28" rx="4" stroke="#14213D" stroke-width="1.5"/>
+          <path d="M8 21L14 10L18 17L22 9" stroke="#E7A339" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      Vértice
+    </div>
+    <div class="nav-links">
+      <a href="#cursos">Cursos</a>
+      <a href="#materiales">Materiales</a>
+      <a href="#nosotros">Nosotros</a>
+      <a href="#contacto">Contacto</a>
+    </div>
+    <div style="display:flex; gap:12px; align-items:center;">
+      <a href="#contacto" class="btn btn-primary">Clase de prueba</a>
+      <button class="menu-toggle" aria-label="Abrir menú">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#14213D" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow"><span class="eyebrow-dot"></span>Academia de matemática · Lima</span>
+        <h1>Entender el problema<br>antes de <em>resolverlo</em>.</h1>
+        <p class="lead">Clases de matemática desde primaria hasta preparación para el examen de admisión. Grupos pequeños, material propio y un profesor que explica el porqué, no solo el cómo.</p>
+        <div class="hero-actions">
+          <a href="#contacto" class="btn btn-primary">Reservar clase de prueba</a>
+          <a href="#cursos" class="btn btn-ghost">Ver cursos</a>
+        </div>
+        <div class="hero-proof">
+          <div class="proof-item">
+            <span class="proof-num mono">12</span>
+            <span class="proof-label">años enseñando</span>
+          </div>
+          <div class="proof-item">
+            <span class="proof-num mono">94%</span>
+            <span class="proof-label">aprueba su examen de admisión</span>
+          </div>
+          <div class="proof-item">
+            <span class="proof-num mono">6</span>
+            <span class="proof-label">alumnos por grupo, máximo</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-graph reveal">
+        <div class="hero-graph-label">
+          <span>f(x) — progreso del alumno</span>
+          <span>MAT · 2026</span>
+        </div>
+        <svg viewBox="0 0 420 320" width="100%" height="auto">
+          <!-- axes -->
+          <line x1="40" y1="270" x2="400" y2="270" stroke="#B9C2D4" stroke-width="1.5"/>
+          <line x1="40" y1="270" x2="40" y2="20" stroke="#B9C2D4" stroke-width="1.5"/>
+          <!-- tick grid -->
+          <g stroke="#DCE1EA" stroke-width="1">
+            <line x1="112" y1="270" x2="112" y2="20"/>
+            <line x1="184" y1="270" x2="184" y2="20"/>
+            <line x1="256" y1="270" x2="256" y2="20"/>
+            <line x1="328" y1="270" x2="328" y2="20"/>
+          </g>
+          <!-- curve -->
+          <path id="curve" d="M50 250 C 120 245, 160 220, 200 175 C 250 120, 290 90, 380 45"
+                fill="none" stroke="#14213D" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- points at course levels -->
+          <g font-family="IBM Plex Mono, monospace" font-size="10" fill="#4A567A">
+            <circle cx="56" cy="248" r="5" fill="#FFFFFF" stroke="#14213D" stroke-width="2"/>
+            <text x="46" y="288">Primaria</text>
+
+            <circle cx="150" cy="228" r="5" fill="#FFFFFF" stroke="#14213D" stroke-width="2"/>
+            <text x="128" y="288">Secundaria</text>
+
+            <circle cx="260" cy="118" r="5" fill="#E7A339" stroke="#14213D" stroke-width="2"/>
+            <text x="228" y="105">Preuniversitario</text>
+
+            <circle cx="378" cy="46" r="6" fill="#E7A339" stroke="#14213D" stroke-width="2.5"/>
+            <text x="326" y="34">Admisión ✓</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section id="cursos">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="section-tag">Cursos</span>
+        <h2>Un curso para cada etapa</h2>
+        <p>Los grupos avanzan por nivel, no por edad exacta: ubicamos a cada alumno según lo que ya domina, con una evaluación diagnóstica gratuita antes de empezar.</p>
+      </div>
+
+      <div class="courses-grid reveal">
+        <div class="course-card">
+          <div class="course-level"><span class="mono">MAT-P1</span><span class="dot"></span></div>
+          <div>
+            <h3>Fundamentos numéricos</h3>
+            <span class="course-age">Primaria · 6 a 11 años</span>
+          </div>
+          <p class="course-desc">Operaciones, fracciones y razonamiento lógico con material manipulativo.</p>
+          <div class="course-foot">
+            <span class="course-price">S/ 130<span>/mes</span></span>
+            <a href="#contacto" class="course-link">Inscribirme →</a>
+          </div>
+        </div>
+
+        <div class="course-card">
+          <div class="course-level"><span class="mono">MAT-S2</span><span class="dot"></span></div>
+          <div>
+            <h3>Álgebra y geometría</h3>
+            <span class="course-age">Secundaria · 12 a 16 años</span>
+          </div>
+          <p class="course-desc">Ecuaciones, funciones y geometría plana, con refuerzo de tareas del colegio.</p>
+          <div class="course-foot">
+            <span class="course-price">S/ 160<span>/mes</span></span>
+            <a href="#contacto" class="course-link">Inscribirme →</a>
+          </div>
+        </div>
+
+        <div class="course-card">
+          <div class="course-level"><span class="mono">MAT-U3</span><span class="dot"></span></div>
+          <div>
+            <h3>Cálculo y trigonometría</h3>
+            <span class="course-age">Preuniversitario · 16 a 18 años</span>
+          </div>
+          <p class="course-desc">Límites, derivadas y trigonometría, orientado a exámenes de admisión.</p>
+          <div class="course-foot">
+            <span class="course-price">S/ 210<span>/mes</span></span>
+            <a href="#contacto" class="course-link">Inscribirme →</a>
+          </div>
+        </div>
+
+        <div class="course-card">
+          <div class="course-level"><span class="mono">MAT-R5</span><span class="dot"></span></div>
+          <div>
+            <h3>Reforzamiento personalizado</h3>
+            <span class="course-age">Todas las edades · 1 a 1</span>
+          </div>
+          <p class="course-desc">Sesiones individuales para cerrar brechas específicas antes de un examen.</p>
+          <div class="course-foot">
+            <span class="course-price">S/ 60<span>/sesión</span></span>
+            <a href="#contacto" class="course-link">Inscribirme →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section id="materiales">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="section-tag">Materiales</span>
+        <h2>Todo el material, en un solo lugar</h2>
+        <p>Guías, formularios y simulacros que usamos en clase. Los alumnos matriculados acceden a la versión completa; aquí puedes revisar una muestra.</p>
+      </div>
+
+      <div class="materials-list reveal">
+        <div class="material-row">
+          <div class="material-icon">PDF</div>
+          <div class="material-info">
+            <h3>Guía de fracciones y decimales</h3>
+            <p>32 ejercicios resueltos paso a paso · Nivel primaria</p>
+          </div>
+          <span class="material-tag">6 páginas</span>
+          <a href="#" class="material-download">Descargar
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v13m0 0l-5-5m5 5l5-5M4 21h16" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+        <div class="material-row">
+          <div class="material-icon">PDF</div>
+          <div class="material-info">
+            <h3>Formulario de álgebra y geometría</h3>
+            <p>Fórmulas clave para exámenes de secundaria</p>
+          </div>
+          <span class="material-tag">2 páginas</span>
+          <a href="#" class="material-download">Descargar
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v13m0 0l-5-5m5 5l5-5M4 21h16" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+        <div class="material-row">
+          <div class="material-icon">VID</div>
+          <div class="material-info">
+            <h3>Videoclase: límites y continuidad</h3>
+            <p>Grabación de clase en vivo con ejercicios comentados</p>
+          </div>
+          <span class="material-tag">48 min</span>
+          <a href="#" class="material-download">Ver clase
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v13m0 0l-5-5m5 5l5-5M4 21h16" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+        <div class="material-row">
+          <div class="material-icon">PDF</div>
+          <div class="material-info">
+            <h3>Simulacro de examen de admisión</h3>
+            <p>40 preguntas con clave de respuestas y explicación</p>
+          </div>
+          <span class="material-tag">10 páginas</span>
+          <a href="#" class="material-download">Descargar
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v13m0 0l-5-5m5 5l5-5M4 21h16" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="about" id="nosotros">
+    <div class="wrap">
+      <div class="reveal">
+        <span class="section-tag" style="color:var(--accent);">Nosotros</span>
+        <h2>No enseñamos a memorizar fórmulas.</h2>
+        <p>Vértice nació en 2014 en un aula de dos alumnos. Hoy seguimos con grupos pequeños a propósito: es la única forma de notar dónde se traba cada estudiante y corregirlo a tiempo, no al final del bimestre.</p>
+        <a href="#contacto" class="btn btn-primary" style="background:var(--accent); border-color:var(--accent); color:var(--accent-ink);">Conocer al equipo</a>
+      </div>
+      <div class="about-list reveal">
+        <div class="about-item">
+          <span class="about-num mono">01</span>
+          <div>
+            <h4>Diagnóstico antes de empezar</h4>
+            <p>Ubicamos el nivel real del alumno, no el de su grado escolar.</p>
+          </div>
+        </div>
+        <div class="about-item">
+          <span class="about-num mono">02</span>
+          <div>
+            <h4>Grupos de máximo 6 alumnos</h4>
+            <p>Suficiente para debatir un problema, poco para pasar desapercibido.</p>
+          </div>
+        </div>
+        <div class="about-item">
+          <span class="about-num mono">03</span>
+          <div>
+            <h4>Reporte de avance mensual</h4>
+            <p>Los padres reciben qué se avanzó y qué falta reforzar.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contacto">
+    <div class="wrap">
+      <div class="contact reveal">
+        <div>
+          <h2>Reserva tu clase de prueba</h2>
+          <p>Es gratuita y sin compromiso. Cuéntanos el nivel y coordinamos un horario esta misma semana.</p>
+          <div class="contact-detail"><strong>WhatsApp</strong> +51 987 654 321</div>
+          <div class="contact-detail"><strong>Correo</strong> hola@vertice.edu.pe</div>
+          <div class="contact-detail"><strong>Sede</strong> Av. Larco 456, Miraflores, Lima</div>
+          <div class="contact-detail"><strong>Horario</strong> Lun a sáb, 9:00 a.m. – 8:00 p.m.</div>
+        </div>
+        <form id="contact-form" onsubmit="event.preventDefault(); document.getElementById('form-success').style.display='block'; this.style.display='none';">
+          <div class="form-field">
+            <label for="name">Nombre del alumno</label>
+            <input type="text" id="name" required>
+          </div>
+          <div class="form-field">
+            <label for="level">Nivel</label>
+            <select id="level">
+              <option>Primaria</option>
+              <option>Secundaria</option>
+              <option>Preuniversitario</option>
+              <option>Reforzamiento personalizado</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="phone">Teléfono de contacto</label>
+            <input type="tel" id="phone" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Solicitar clase de prueba</button>
+        </form>
+        <p id="form-success" style="display:none; color:var(--ink-soft); font-size:0.95rem;">Listo — te escribiremos por WhatsApp en menos de 24 horas para coordinar el horario.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="footer-brand">Vértice</span>
+    <div class="footer-links">
+      <a href="#cursos">Cursos</a>
+      <a href="#materiales">Materiales</a>
+      <a href="#nosotros">Nosotros</a>
+      <a href="#contacto">Contacto</a>
+    </div>
+    <span style="font-size:0.82rem; color:var(--ink-faint);">© 2026 Academia Vértice</span>
+  </div>
+</footer>
+
+<script>
+  // reveal on scroll
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+  }, {threshold:0.15});
+  revealEls.forEach(el=>io.observe(el));
+
+  // hero curve draw-in
+  const curve = document.getElementById('curve');
+  if(curve){
+    const len = curve.getTotalLength();
+    curve.style.strokeDasharray = len;
+    curve.style.strokeDashoffset = len;
+    requestAnimationFrame(()=>{
+      curve.style.transition = 'stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1)';
+      curve.style.strokeDashoffset = '0';
+    });
+  }
+
+  // mobile menu (simple toggle to a stacked panel)
+  const toggle = document.querySelector('.menu-toggle');
+  const navLinks = document.querySelector('.nav-links');
+  toggle.addEventListener('click', ()=>{
+    if(navLinks.style.display === 'flex'){
+      navLinks.style.display = 'none';
+    } else {
+      navLinks.style.display = 'flex';
+      navLinks.style.position = 'absolute';
+      navLinks.style.top = '68px';
+      navLinks.style.left = '0';
+      navLinks.style.right = '0';
+      navLinks.style.background = 'var(--paper)';
+      navLinks.style.flexDirection = 'column';
+      navLinks.style.padding = '20px 32px';
+      navLinks.style.borderBottom = '1px solid var(--line)';
+      navLinks.style.gap = '18px';
+    }
+  });
+</script>
+</body>
+</html>
